@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Use Dynamic Web TWAIN to Scan</title>
+	<script type="text/javascript" src="Resources/dynamsoft.webtwain.initiate.js"></script>
+	<script type="text/javascript" src="Resources/dynamsoft.webtwain.config.js"></script>
+</head>
+
+<body>
+	<select size="1" id="source" style="position: relative; width: 220px;"></select>
+	<input type="button" value="Scan" onclick="AcquireImage();" />
+
+	<div id="dwtObjectContainer"></div>
+
+	<script type="text/javascript">
+		var DWObject;
+		var remoteIP = "192.168.8.51";
+		Dynamsoft.WebTwainEnv.AutoLoad = false;
+		// The product key is for trial. Please contact support@dynamsoft for purchase.
+		Dynamsoft.WebTwainEnv.ProductKey = '4EC19D9E43E8CF8D7B1DF91DD6611FFA7F171B700694370EBD051E15068214152A5EAADAD65B6792DF529A388CCD09CBBBB4984FA356DDB4EEF8233CB50749BD9114C154F129FE6F65F71C6D264D5B3611B1500039F8BD71CEEA60DB407375B9A5A570D8B1B8C14F43A343650F64399E3F6AD7E6415A4DF8EAAB7C8B4D409F98033E970A1637';
+		var HTTP_PORT = 18618;
+		var HTTPS_PORT = 18619;
+		window.onload = function() {
+			Dynamsoft.WebTwainEnv.CreateDWTObject('dwtObjectContainer', remoteIP, HTTP_PORT, HTTPS_PORT, function(obj) {
+				DWObject = obj;
+				DWObject.Width = 270;
+				DWObject.Height = 350;
+				console.log('DWTObject created.');
+				if (DWObject) {
+					var count = DWObject.SourceCount;
+					if (count == 0 && Dynamsoft.Lib.env.bMac) {
+						DWObject.CloseSourceManager();
+						DWObject.ImageCaptureDriverType = 0;
+						DWObject.OpenSourceManager();
+						count = DWObject.SourceCount;
+					}
+					for (var i = 0; i < count; i++)
+						document.getElementById("source").options.add(new Option(DWObject.GetSourceNameItems(i), i)); // Get Data Source names from Data Source Manager and put them in a drop-down box
+				}
+			}, function(es) {
+				console.log(es);
+			});
+		};
+
+		function AcquireImage() {
+			if (DWObject) {
+				var OnAcquireImageSuccess, OnAcquireImageFailure;
+				OnAcquireImageSuccess = OnAcquireImageFailure = function() {
+					DWObject.CloseSource();
+				};
+
+				DWObject.SelectSourceByIndex(document.getElementById("source").selectedIndex); //Use method SelectSourceByIndex to avoid the 'Select Source' dialog
+				DWObject.OpenSource();
+				DWObject.IfDisableSourceAfterAcquire = true; // Scanner source will be disabled/closed automatically after the scan.
+				DWObject.AcquireImage(OnAcquireImageSuccess, OnAcquireImageFailure);
+			}
+		}
+	</script>
+</body>
+
+</html>
