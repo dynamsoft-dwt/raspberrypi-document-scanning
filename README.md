@@ -48,4 +48,8 @@ https://www.youtube.com/watch?v=v6cImg95u0c
 ## Contact
 To get more detailed information, please contact support@dynamsoft.com.
 
+## Blog
+[Scanner Sidecar Solution with Raspberry Pi][2]
+
 [1]:http://labs.dynamsoft.com/dwt-for-raspberry-pi.htm
+[2]:http://www.codepool.biz/scanner-sidecar-solution-raspberry-pi.html
